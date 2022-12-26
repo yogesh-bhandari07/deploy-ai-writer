@@ -31,24 +31,94 @@ function NewHome() {
 
   const createContent = async (url) => {
     setLoading(true);
-    editorData.replace("write an article", "");
+    var newE = editorData.replace("write an article on", "");
+    var newEE = editorData.replace("write article on", "");
+
     let s = "";
-    if (selectedTitles.length != 0 && keywords.length != 0 && selectedTitles != undefined && keywords != undefined) {
+    if (
+      selectedTitles.length != 0 &&
+      keywords.length != 0 &&
+      selectedTitles != undefined &&
+      keywords != undefined &&
+      newE != ""
+    ) {
       let ts = selectedTitles.join();
       let kw = keywords.join();
-      s =
-        "write articles on these topics " +
-        editorData +
-        ", " +
-        ts +
-        " included these keywords " +
-        kw;
-    } else if (selectedTitles.length != 0 && selectedTitles !=undefined) {
+      if (keywords.length == 1) {
+        s =
+          "write articles on these topics " +
+          newE +
+          ", " +
+          ts +
+          " included this keyword " +
+          kw;
+      } else {
+        s =
+          "write articles on these topics " +
+          newE +
+          ", " +
+          ts +
+          " included these keywords " +
+          kw;
+      }
+    } else if (
+      selectedTitles.length != 0 &&
+      keywords.length != 0 &&
+      selectedTitles != undefined &&
+      keywords != undefined &&
+      newEE != ""
+    ) {
       let ts = selectedTitles.join();
-      s = "write articles on these topics " + editorData + ", " + ts;
-    } else if (keywords != undefined) {
       let kw = keywords.join();
-      s = "write article on " + editorData + " included these keywords " + kw;
+      if (keywords.length == 1) {
+        s =
+          "write articles on these topics " +
+          newEE +
+          ", " +
+          ts +
+          " included this keyword " +
+          kw;
+      } else {
+        s =
+          "write articles on these topics " +
+          newEE +
+          ", " +
+          ts +
+          " included these keywords " +
+          kw;
+      }
+    } else if (
+      selectedTitles.length != 0 &&
+      selectedTitles != undefined &&
+      newE != ""
+    ) {
+      let ts = selectedTitles.join();
+      s = "write articles on these topics " + newE + ", " + ts;
+    } else if (
+      selectedTitles.length != 0 &&
+      selectedTitles != undefined &&
+      newEE != ""
+    ) {
+      let ts = selectedTitles.join();
+      s = "write articles on these topics " + newEE + ", " + ts;
+    } else if (keywords != undefined && keywords.length != 0 && newE != "") {
+      let kw = keywords.join();
+      if (keywords.length == 1) {
+        s = "write article on " + newE + " included this keyword " + kw;
+      } else {
+        s = "write article on " + newE + " included these keywords " + kw;
+      }
+    } else if (keywords != undefined && keywords.length != 0 && newEE != "") {
+      let kw = keywords.join();
+      if (keywords.length == 1) {
+        s = "write article on " + newEE + " included this keyword " + kw;
+      } else {
+        s = "write article on " + newEE + " included these keywords " + kw;
+      }
+    } else if (newE != "") {
+      s = "write an article on " + newE;
+    } else if (newEE != "") {
+      s = "write an article on " + newEE;
     } else {
       s = "write an article on " + editorData;
     }
@@ -81,10 +151,16 @@ function NewHome() {
 
   const getListOfTitles = async (url) => {
     setLoading(true);
-
-    let s = "create only titles with these keywords ";
+    var s='';
+    console.log(keywords.length);
+    if (keywords.length==1){
+      s = "create only titles with this keyword ";
+    }else{
+      s = "create only titles with these keywords ";
+    }
     let kwords = keywords.join();
     s = s + kwords;
+    
 
     await axios({
       method: "post",
@@ -115,10 +191,10 @@ function NewHome() {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     if (e.charCode != 13 && e.keyCode != 13) {
       createContent("content-create");
-    } 
+    }
   };
 
   const handleKeywordInput = (e) => {
@@ -163,10 +239,7 @@ function NewHome() {
       <section className="text-gray-600 body-font">
         <div className="container mx-auto flex px-5 py-24 md:flex-row flex-col items-center">
           <div className="lg:flex-grow  lg:max-w-lg lg:w-full md:w-1/2 w-5/6 lg:pr-24 md:pr-16 flex flex-col md:items-start md:text-left mb-16 md:mb-0 items-center text-center">
-            <div
-              className="w-full"
-           
-            >
+            <div className="w-full">
               <div className="mb-6">
                 <label
                   htmlFor="email"
@@ -224,16 +297,19 @@ function NewHome() {
                     )
                   : ""}
 
-              {keywords.length != 0?<center>
-                  <button
-                    onClick={handleGetTitle}
-                    type="button"
-                    className="bg-[#C6EBC5] px-1 py-1 mx-1 rounded-sm ring-2 ring-green-300 w-[10rem] mt-4"
-                  >
-                    Get Titles
-                  </button>
-                </center>:''
-            }
+                {keywords.length != 0 ? (
+                  <center>
+                    <button
+                      onClick={handleGetTitle}
+                      type="button"
+                      className="bg-[#C6EBC5] px-1 py-1 mx-1 rounded-sm ring-2 ring-green-300 w-[10rem] mt-4"
+                    >
+                      Get Titles
+                    </button>
+                  </center>
+                ) : (
+                  ""
+                )}
               </div>
 
               <div className="mb-6 w-full">
@@ -297,7 +373,7 @@ function NewHome() {
               </div>
               <center>
                 <button
-                onClick={handleSubmit}
+                  onClick={handleSubmit}
                   type="button"
                   className="bg-[#3F4E4F] py-2.5 px-2 text-white rounded-lg"
                 >
